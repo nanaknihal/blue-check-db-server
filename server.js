@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
 //const { Sequelize } = require("Sequelize");
@@ -46,7 +45,6 @@ app.get ("/", (req, res) => {
 app.get ("/setdangerous/:handle", (req, res) => {
     const callback = (error, result) => {
         if(error){
-            console.log(error);
             res.send(error);
         } else {
             res.send(true);
