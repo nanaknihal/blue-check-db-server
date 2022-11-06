@@ -55,7 +55,7 @@ app.get ("/", (req, res) => {
         res.json({message: "hey"});
 });
 
-app.get ("/setdangerous/:handle", (req, res) => {
+app.get ("/setdangerous/", (req, res) => {
     const callback = (error, result) => {
         if(error){
             res.send(error);
@@ -63,7 +63,7 @@ app.get ("/setdangerous/:handle", (req, res) => {
             res.send(true);
         }
     }
-    _setVerified(req.params.handle, callback);
+    _setVerified(req.user.username, callback);
 });
 
 app.get ("/get/:handle", (req, res) => {
