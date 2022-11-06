@@ -56,7 +56,7 @@ app.get ("/setdangerous/:handle", (req, res) => {
         if(error){
             res.send(false);
         } else {
-            res.send(result[0]["Verified"]);
+            res.send(true);
         }
     }
     _setVerified(req.params.handle, callback);
