@@ -1,31 +1,44 @@
 const express = require("express");
+const passport = require('passport');
+const session = require('express-session');
 const cors = require("cors");
 const mysql = require("mysql");
-//const { Sequelize } = require("Sequelize");
-const dbConfig = require("../handle-verified.db.config.js");
-const assert = require("assert");
+require("dotenv").config();
+const dbConfig = process.env.NO_DB_ACCESS || require("../handle-verified.db.config.js");
 
 const app = express();
 
 const corsOptions = {
-        origin: "*"
+    origin: "*"
 };
+const TwitterStrategy = require("passport-twitter").Strategy;
+
+
+app.use(session({
+    secret: "insecure secret",
+    resave: false,
+    saveUninitialized: false,
+  }));
+app.use(passport.authenticate('session'));
+
 
 app.use(cors(corsOptions));
 
 
 
+if(!process.env.NO_DB_ACCESS){
+    const connection = mysql.createConnection({
+        host: dbConfig.HOST,
+        user: dbConfig.USER,
+        password: dbConfig.PASSWORD,
+        database: dbConfig.DB
+      });
+      connection.connect(error => {
+          if (error) throw error;
+          console.log("Successfully connected to database");
+      });
+}
 
-const connection = mysql.createConnection({
-  host: dbConfig.HOST,
-  user: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB
-});
-connection.connect(error => {
-    if (error) throw error;
-    console.log("Successfully connected to database");
-});
 
 const _setVerified = (handle, callback) => {
     // assert(handle.length < 32, "handle is too long"); // I assume 32 bits or more is too long for the elliptic curve
@@ -64,6 +77,31 @@ app.get ("/get/:handle", (req, res) => {
     }
 
     getVerified(req.params.handle, callback);
+});
+
+
+
+/* Passport twitter authentication */
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+passport.use(new TwitterStrategy({
+    consumerKey: process.env.TWITTER_CONSUMERKEY,
+    consumerSecret: process.env.TWITTER_CONSUMERSECRET,
+    callbackURL: "/auth/twitter/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
+
+app.get('/auth/twitter',passport.authenticate('twitter'));
+app.get('/auth/twitter/callback',passport.authenticate('twitter', { failureRedirect: '/auth/error' }),
+function(req, res) {
+  res.redirect('/');
 });
 
 // set port, listen for requests
