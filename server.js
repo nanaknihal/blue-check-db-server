@@ -55,7 +55,7 @@ app.get ("/", (req, res) => {
         res.json({message: "hey"});
 });
 
-app.get ("/setdangerous/", (req, res) => {
+app.get ("/set/:proof", (req, res) => {
     const callback = (error, result) => {
         if(error){
             res.send(error);
@@ -63,7 +63,15 @@ app.get ("/setdangerous/", (req, res) => {
             res.send(true);
         }
     }
-    _setVerified(req.user.username, callback);
+    // Deserialize proof from base64 to JSON:
+    const proof = JSON.parse(Buffer.from(req.params.proof, "base64").toString());
+    axios.post(
+        "https://developer.worldcoin.org/api/v1/verify",
+        proof, 
+        { headers: {"Content-Type": "application/json" }}
+    ).then(() => (
+        _setVerified(req.user.username, callback)
+    ));
 });
 
 app.get ("/get/:handle", (req, res) => {
