@@ -67,7 +67,7 @@ app.get ("/get/:handle", (req, res) => {
         if(error){
             res.send(false);
         } else {
-            // console.log(result[0]["Verified"]);
+            if (!(result.length) || result[0]["Verified"]) return false;
             res.send(Boolean(result[0]["Verified"]));
         }
     }
