@@ -34,18 +34,9 @@ const _setVerified = (handle, callback) => {
 }
 
 const getVerified = (handle, callback) => {
-    console.log(`SELECT Verified FROM HandleVerified WHERE Handle='${handle.toLowerCase()}'`);
     connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle.toLowerCase()}'`, (err, result) => {callback(err, result)});
 }
 
-
-
-// parse requests of content-type - application/json
-
-app.use(bodyParser.json());
-// parse requests of content-type - application/x-www-form-urlencoded
-
-app.use(bodyParser.urlencoded({extended:true}));
 
 app.get ("/", (req, res) => {
         console.log("got a request")
