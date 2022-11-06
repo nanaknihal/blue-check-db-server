@@ -46,7 +46,8 @@ app.get ("/", (req, res) => {
 app.get ("/setdangerous/:handle", (req, res) => {
     const callback = (error, result) => {
         if(error){
-            res.send(false);
+            console.log(error);
+            res.send(error);
         } else {
             res.send(true);
         }
