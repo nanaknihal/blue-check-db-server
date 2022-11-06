@@ -28,13 +28,13 @@ connection.connect(error => {
     console.log("Successfully connected to database");
 });
 
-const _setVerified = (handle) => {
+const _setVerified = (handle, callback) => {
     // assert(handle.length < 32, "handle is too long"); // I assume 32 bits or more is too long for the elliptic curve
-    connection.query(`INSERT INTO HandleVerified (Handle, Verified) VALUES ('${handle}', 1)`, (err, res) => {return res});
+    connection.query(`INSERT INTO HandleVerified (Handle, Verified) VALUES ('${handle}', 1)`, (err, result) => {console.log(res); callback(res)});
 }
 
-const getVerified = (handle) => {
-    connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle}'`, (err, res) => {return res});
+const getVerified = (handle, callback) => {
+    connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle}'`, (err, res) => {console.log(res); callback(res)});
 }
 
 
@@ -58,8 +58,7 @@ app.get ("/setdangerous/:handle", (req, res) => {
 });
 
 app.get ("/get/:handle", (req, res) => {
-    console.log(getVerified(req.params.handle));
-    res.send("getVerified(req.params.handle)");
+    console.log(getVerified(req.params.handle, data=>res.send(data)));
 });
 
 // set port, listen for requests
