@@ -34,6 +34,7 @@ const _setVerified = (handle, callback) => {
 }
 
 const getVerified = (handle, callback) => {
+    console.log(`SELECT Verified FROM HandleVerified WHERE Handle='${handle.toLowerCase()}'`);
     connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle.toLowerCase()}'`, (err, result) => {callback(err, result)});
 }
 
