@@ -30,11 +30,11 @@ connection.connect(error => {
 
 const _setVerified = (handle) => {
     // assert(handle.length < 32, "handle is too long"); // I assume 32 bits or more is too long for the elliptic curve
-    connection.query(`INSERT INTO HandleVerified (Handle, Verified) VALUES ('${handle}', 1)`, (err, res) => {result(null,res); return});
+    connection.query(`INSERT INTO HandleVerified (Handle, Verified) VALUES ('${handle}', 1)`, (err, res) => {return res});
 }
 
 const getVerified = (handle) => {
-    connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle}'`, (err, res) => {result(null,res); return});
+    connection.query(`SELECT Verified FROM HandleVerified WHERE Handle='${handle}'`, (err, res) => {return res});
 }
 
 
